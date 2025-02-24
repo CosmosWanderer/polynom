@@ -227,6 +227,23 @@ public:
 	}
 
 	/* --- Other --- */
+	bool operator!=(const List& l) const {
+		if (size != l.size) return true;
+
+		auto It1 = begin();
+		auto It2 = l.begin();
+
+		while (It1 != end() && It2 != l.end()) {
+			if (*It1 != *It2) return true;
+			It1++;
+			It2++;
+		}
+
+		return false;
+	}
+	bool operator==(const List& l) const {
+		return !(*this != l)
+	}
 	bool isEmpty() const {
 		return size == 0;
 	}

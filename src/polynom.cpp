@@ -165,17 +165,17 @@ Polynom Polynom::operator*(const Polynom& p) const {
 
 Polynom Polynom::operator+(const Monom& m) const {
 	Polynom p(m);
-	return p + *this;
+	return *this + p;
 }
 
 Polynom Polynom::operator-(const Monom& m) const {
 	Polynom p(m);
-	return p - *this;
+	return *this - p;
 }
 
 Polynom Polynom::operator*(const Monom& m) const {
 	Polynom p(m);
-	return p * *this;
+	return *this * p;
 }
 
 Polynom Polynom::operator+(const double nm) const {
@@ -194,6 +194,8 @@ Polynom Polynom::operator*(const double nm) const {
 }
 
 Polynom Polynom::operator/(const double nm) const {
+	if (nm == 0) throw std::runtime_error("Division by zero");
+
 	Polynom p(1 / nm);
 	return *this * p;
 }

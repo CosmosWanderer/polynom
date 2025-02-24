@@ -82,7 +82,7 @@ Monom Monom::operator*(double mult) const {
 	return res;
 }
 Monom Monom::operator/(const Monom& m) const {
-	if (m.getCoef() == 0) throw std::runtime_error("Division bby zero");
+	if (m.getCoef() == 0) throw std::runtime_error("Division by zero");
 
 	double resCoef = coef / m.getCoef();
 	int resPX = getXPower() - m.getXPower();
@@ -121,19 +121,15 @@ Polynom Monom::operator*(const Polynom& p) const {
 
 /* --- Other --- */
 std::string Monom::getValue() const {
-	std::string S;
-	if (getCoef() >= 0) {
-		S = std::to_string(getCoef());		
-	}
-	else {
-		S = "(" + std::to_string(getCoef()) + ")";
-	}
+	std::string S = std::to_string(getCoef());
 	int pntr = S.size() - 1;
 
 	while (pntr != 1 && S[pntr] == '0' && S[pntr - 1] == '0') {
 		S.pop_back();
 		pntr--;
 	}
+
+	if (getCoef() < 0) S = "(" + S + ")";
 
 	S += "*X^" + std::to_string(getXPower());
 	S += "*Y^" + std::to_string(getYPower());
