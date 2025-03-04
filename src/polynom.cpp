@@ -14,7 +14,7 @@ Polynom::Polynom(double coef) {
 	addMonom(m);
 }
 
-/* --- Private functionality --- */
+/* --- Some functionality --- */
 Polynom Polynom::addMonom(const Monom& m) {
 	// If zero, then dont do anything
 	if (m.getCoef() == 0) return *this;

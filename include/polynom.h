@@ -15,13 +15,11 @@ public:
 	Polynom(double coef);
 	Polynom(const Monom& m);
 
-private:
-	/* --- Private functionality --- */
+	/* --- Some functionality --- */
 	Polynom addMonom(const Monom& m);
 	Polynom addInTheEnd(const Monom& m);
 	void cleanZeroedMonoms();
 
-public:
 	/* --- Operations --- */
 	Polynom operator+(const Polynom& p) const;
 	Polynom operator-(const Polynom& p) const;
