@@ -131,9 +131,11 @@ std::string Monom::getValue() const {
 
 	if (getCoef() < 0) S = "(" + S + ")";
 
-	S += "*X^" + std::to_string(getXPower());
-	S += "*Y^" + std::to_string(getYPower());
-	S += "*Z^" + std::to_string(getZPower());
+	S += " * ";
+
+	S += "x^" + std::to_string(getXPower());
+	S += "y^" + std::to_string(getYPower());
+	S += "z^" + std::to_string(getZPower());
 	return S;
 }
 
