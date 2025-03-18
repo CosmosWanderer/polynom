@@ -38,6 +38,8 @@ Polynom Polynom::addMonom(const Monom& m) {
 	// If all powers of monoms are lower, then add it to the end;
 	Monoms.insert_back(m);
 	size++;
+
+	cleanZeroedMonoms();
 	return *this;
 }
 Polynom Polynom::addInTheEnd(const Monom& m) {
@@ -152,14 +154,27 @@ Polynom Polynom::operator-(const Polynom& p) const {
 
 Polynom Polynom::operator*(const Polynom& p) const {
 	Polynom res;
+	
 	for (auto It1 = Monoms.begin(); It1 != Monoms.end(); It1++) {
 		for (auto It2 = p.Monoms.begin(); It2 != p.Monoms.end(); It2++) {
-			res.addMonom(*It1 * *It2);
+			Monom product = *It1 * *It2;
+
+			auto ItRes = res.Monoms.begin();
+			while (ItRes != res.Monoms.end() && ItRes->getPowers() < product.getPowers()) {
+				ItRes++;
+			}
+
+			if (ItRes != res.Monoms.end() && ItRes->getPowers() == product.getPowers()) {
+				ItRes->setCoef(ItRes->getCoef() + product.getCoef());
+			}
+			else {
+				res.Monoms.insert_before(product, ItRes);
+				res.size++;
+			}
 		}
 	}
 
 	res.cleanZeroedMonoms();
-
 	return res;
 }
 
@@ -174,8 +189,12 @@ Polynom Polynom::operator-(const Monom& m) const {
 }
 
 Polynom Polynom::operator*(const Monom& m) const {
-	Polynom p(m);
-	return *this * p;
+	// Complexity O(n)
+	Polynom res = *this;
+	for (auto It = res.Monoms.begin(); It != res.Monoms.end(); It++) {
+		*It = *It * m;
+	}
+	return res;
 }
 
 Polynom Polynom::operator+(const double nm) const {

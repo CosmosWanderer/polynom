@@ -185,15 +185,13 @@ Polynom PolynomTranslator::polynomParser(std::string input) {
 
 	/*
 	Monoms must look like this:
-	"coef * x^iy^jz^k" 
+	"coef * x^iy^jz^k"
 	Example:
 	5.0 * x^3y^8z^1
 	Space after power of z means the end of current monon
 
 	All parts are divided by "+" and "-" signs
 	*/
-
-
 	/*
 	Possible states
 	(-1) - States 0 and 1 combined, used for first monom (Starting state)
@@ -212,10 +210,10 @@ Polynom PolynomTranslator::polynomParser(std::string input) {
 	Then, return to state 0
 
 	*/
-	
+	/*
 	int status = -1;
 	Polynom result;
-	
+
 	double curCoef = 1.0;
 	int curXPower = 0;
 	int curYPower = 0;
@@ -278,7 +276,7 @@ Polynom PolynomTranslator::polynomParser(std::string input) {
 			}
 			throw std::string("Case 1 error");
 			break;
-		
+
 		case 2: // entering part before the dot, waiting for the dot
 			if (numbers.count(c)) {
 				status = 2;
@@ -292,7 +290,7 @@ Polynom PolynomTranslator::polynomParser(std::string input) {
 			}
 			throw std::string("Case 2 error");
 			break;
-		
+
 		case 3: // entering part after the dot, waiting for space
 			if (numbers.count(c)) {
 				status = 3;
@@ -395,7 +393,7 @@ Polynom PolynomTranslator::polynomParser(std::string input) {
 			if (c == ' ' && curToken.length()) {
 				status = 0;
 				curZPower = stoi(curToken);
-				
+
 				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
 				result.addMonom(curMonom);
 				curCoef = 1.0;
@@ -414,6 +412,449 @@ Polynom PolynomTranslator::polynomParser(std::string input) {
 	if (status != 0) {
 		throw std::string("Unexpected end of input");
 	}
+	*/
+
+
+
+
+
+	// New parser
+	/*
+	Monoms are separated by spaces, '+' and '-' marks
+	-1: Start of the input, waiting for monom, + or -
+	0: End of the input/ waiting for new monom (+ or -)
+	1: Waiting for monom parts
+	2: Entering numbers before '.'
+	3: Waiting for the dot
+	*/
+
+
+
+	int status = -1;
+	Polynom result;
+
+	double curCoef = 1.0;
+	int curXPower = 0;
+	int curYPower = 0;
+	int curZPower = 0;
+	std::string curToken = "";
+
+	for (char c : input) {
+		switch (status) {
+		case -1:
+			if (c == ' ') {
+				break;
+			}
+			if (c == '+') {
+				status = 1;
+				break;
+			}
+			if (c == '-') {
+				status = 1;
+				curCoef *= -1;
+				break;
+			}
+			// Monom parts
+			if (c == '0') {
+				curToken += c;
+				status = 3;
+				break;
+			}
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 2;
+				break;
+			}
+			if (c == 'x') {
+				status = 5;
+				break;
+			}
+			if (c == 'y') {
+				status = 8;
+				break;
+			}
+			if (c == 'z') {
+				status = 11;
+				break;
+			}
+			throw std::string("Case -1 error");
+		case 0:
+			if (c == ' ') {
+				break;
+			}
+			if (c == '+') {
+				status = 1;
+				break;
+			}
+			if (c == '-') {
+				status = 1;
+				curCoef *= -1;
+				break;
+			}
+			throw std::string("Case 0 error");
+		case 1:
+			if (c == ' ') {
+				break;
+			}
+			if (c == '0') {
+				curToken += c;
+				status = 3;
+				break;
+			}
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 2;
+				break;
+			}
+			if (c == 'x') {
+				status = 5;
+				break;
+			}
+			if (c == 'y') {
+				status = 8;
+				break;
+			}
+			if (c == 'z') {
+				status = 11;
+				break;
+			}
+			throw std::string("Case 1 error");
+		case 2:
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 2;
+				break;
+			}
+			if (c == '.') {
+				curToken += c;
+				status = 4;
+				break;
+			}
+			throw std::string("Case 2 error");
+		case 3:
+			if (c == '.') {
+				curToken += c;
+				status = 4;
+				break;
+			}
+			throw std::string("Case 3 error");
+		case 4:
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 4;
+				break;
+			}
+			// Other monom parts
+			if (c == 'x') {
+				curCoef *= std::stod(curToken);
+				curToken = "";
+				status = 5;
+				break;
+			}
+			if (c == 'y') {
+				curCoef *= std::stod(curToken);
+				curToken = "";
+				status = 8;
+				break;
+			}
+			if (c == 'z') {
+				curCoef *= std::stod(curToken);
+				curToken = "";
+				status = 11;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curCoef *= std::stod(curToken);
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+				
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 4 error");
+		
+		// Powers
+		case 5:
+			if (c == '^') {
+				status = 6;
+				break;
+			}
+			// Other monom parts
+			if (c == 'y') {
+				curXPower += 1;
+				status = 8;
+				break;
+			}
+			if (c == 'z') {
+				curXPower += 1;
+				status = 11;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curXPower += 1;
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 5 error");
+		case 6:
+			if (c == '0') {
+				status = 14;
+				break;
+			}
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 7;
+				break;
+			}
+			throw std::string("Case 6 error");
+		case 7:
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 7;
+				break;
+			}
+			// Other monom parts
+			if (c == 'y') {
+				curXPower += stoi(curToken);
+				curToken = "";
+				status = 8;
+				break;
+			}
+			if (c == 'z') {
+				curXPower += stoi(curToken);
+				curToken = "";
+				status = 11;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curXPower += stoi(curToken);
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 7 error");
+
+		case 8:
+			if (c == '^') {
+				status = 9;
+				break;
+			}
+			// Other monom parts
+			if (c == 'x') {
+				curYPower += 1;
+				status = 5;
+				break;
+			}
+			if (c == 'z') {
+				curYPower += 1;
+				status = 11;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curYPower += 1;
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 8 error");
+		case 9:
+			if (c == '0') {
+				status = 14;
+				break;
+			}
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 10;
+				break;
+			}
+			throw std::string("Case 9 error");
+		case 10:
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 10;
+				break;
+			}
+			// Other monom parts
+			if (c == 'x') {
+				curYPower += stoi(curToken);
+				curToken = "";
+				status = 5;
+				break;
+			}
+			if (c == 'z') {
+				curYPower += stoi(curToken);
+				curToken = "";
+				status = 11;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curYPower += stoi(curToken);
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 10 error");
+
+		case 11:
+			if (c == '^') {
+				status = 12;
+				break;
+			}
+			// Other monom parts
+			if (c == 'x') {
+				curZPower += 1;
+				status = 5;
+				break;
+			}
+			if (c == 'y') {
+				curZPower += 1;
+				status = 8;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curZPower += 1;
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 11 error");
+		case 12:
+			if (c == '0') {
+				status = 14;
+				break;
+			}
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 13;
+				break;
+			}
+			throw std::string("Case 12 error");
+		case 13:
+			if (numbers.count(c)) {
+				curToken += c;
+				status = 13;
+				break;
+			}
+			// Other monom parts
+			if (c == 'x') {
+				curZPower += stoi(curToken);
+				curToken = "";
+				status = 5;
+				break;
+			}
+			if (c == 'y') {
+				curZPower += stoi(curToken);
+				curToken = "";
+				status = 8;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				curZPower += stoi(curToken);
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 13 error");
+		
+		case 14:
+			if (c == 'x') {
+				curToken = "";
+				status = 5;
+				break;
+			}
+			if (c == 'y') {
+				curToken = "";
+				status = 8;
+				break;
+			}
+			if (c == 'z') {
+				curToken = "";
+				status = 11;
+				break;
+			}
+			// End of monom
+			if (c == ' ') {
+				Monom curMonom(curCoef, curXPower, curYPower, curZPower);
+				result.addMonom(curMonom);
+
+				curCoef = 1.0;
+				curXPower = 0;
+				curYPower = 0;
+				curZPower = 0;
+				curToken = "";
+
+				status = 0;
+				break;
+			}
+			throw std::string("Case 14 error");
+		}
+	}
+	
+	//std::cout << status << std::endl;
+	if (status != 0) throw std::string("Unexpected end of input");
+
 	return result;
 };
 

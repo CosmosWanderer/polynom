@@ -7,6 +7,7 @@
 
 Monom::Monom(double c, int p) : coef(c), powers(p) {};
 Monom::Monom(double c, int px, int py, int pz) : coef(c) {
+	if (px > 1000 || py > 1000 || pz > 1000) throw std::runtime_error("Powers are to high");
 	powers = (px << 20) | (py << 10) | pz;
 }
 
@@ -34,6 +35,8 @@ void Monom::setPowers(int p) {
 	powers = p;
 }
 void Monom::setPowers(int px, int py, int pz) {
+	if (px > 1000 || py > 1000 || pz > 1000) throw std::runtime_error("Powers are to high");
+
 	powers = (px << 20) | (py << 10) | pz;
 }
 void Monom::setCoef(double c) {

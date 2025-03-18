@@ -27,14 +27,14 @@ TEST(Polynom, CreatedPolynomHasRightValues2) {
 	Monom m(1, 2, 3, 4);
 	Polynom p(m);
 
-	EXPECT_EQ(p.getValue(), "1.0*X^2*Y^3*Z^4");
+	EXPECT_EQ(p.getValue(), "1.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, CreatedPolynomHasRightValues3) {
 	double c = 10;
 	Polynom p(c);
 
-	EXPECT_EQ(p.getValue(), "10.0*X^0*Y^0*Z^0");
+	EXPECT_EQ(p.getValue(), "10.0 * x^0y^0z^0");
 }
 
 TEST(Polynom, CanAddPolynomes) {
@@ -74,7 +74,7 @@ TEST(Polynom, PolynomAdditionWorksRight1) {
 	Polynom p1(m1);
 	Polynom p2(m2);
 
-	EXPECT_EQ((p1 + p2).getValue(), "5.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p1 + p2).getValue(), "5.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, PolynomAdditionWorksRight2) {
@@ -84,7 +84,7 @@ TEST(Polynom, PolynomAdditionWorksRight2) {
 	Polynom p1(m1);
 	Polynom p2(m2);
 
-	EXPECT_EQ((p1 + p2).getValue(), "1.0*X^2*Y^3*Z^4 + 1.0*X^3*Y^2*Z^4");
+	EXPECT_EQ((p1 + p2).getValue(), "1.0 * x^2y^3z^4 + 1.0 * x^3y^2z^4");
 }
 
 TEST(Polynom, PolynomSubtractionWorksRight) {
@@ -94,7 +94,7 @@ TEST(Polynom, PolynomSubtractionWorksRight) {
 	Polynom p1(m1);
 	Polynom p2(m2);
 
-	EXPECT_EQ((p1 - p2).getValue(), "1.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p1 - p2).getValue(), "1.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, PolynomMultiplicationWorksRight1) {
@@ -104,7 +104,7 @@ TEST(Polynom, PolynomMultiplicationWorksRight1) {
 	Polynom p1(m1);
 	Polynom p2(m2);
 
-	EXPECT_EQ((p1 * p2).getValue(), "20.0*X^4*Y^6*Z^8");
+	EXPECT_EQ((p1 * p2).getValue(), "20.0 * x^4y^6z^8");
 }
 
 TEST(Polynom, PolynomMultiplicationWorksRight2) {
@@ -120,7 +120,7 @@ TEST(Polynom, PolynomMultiplicationWorksRight2) {
 	Polynom p2(m3);
 	p2 = p2 + m4;
 
-	EXPECT_EQ((p1 * p2).getValue(), "25.0*X^4*Y^6*Z^8 + 50.0*X^5*Y^7*Z^9 + 25.0*X^6*Y^8*Z^10");
+	EXPECT_EQ((p1 * p2).getValue(), "25.0 * x^4y^6z^8 + 50.0 * x^5y^7z^9 + 25.0 * x^6y^8z^10");
 }
 
 TEST(Polynom, CanAddConstant) {
@@ -162,28 +162,28 @@ TEST(Polynom, ConstantAdditionWorksRight) {
 	Monom m(1, 2, 3, 4);
 	Polynom p(m);
 
-	EXPECT_EQ((p + 10.0).getValue(), "10.0*X^0*Y^0*Z^0 + 1.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p + 10.0).getValue(), "10.0 * x^0y^0z^0 + 1.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, ConstantSubtractionWorksRight) {
 	Monom m(1, 2, 3, 4);
 	Polynom p(m);
 
-	EXPECT_EQ((p - 10.0).getValue(), "(-10.0)*X^0*Y^0*Z^0 + 1.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p - 10.0).getValue(), "(-10.0) * x^0y^0z^0 + 1.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, ConstantMultiplicationWorksRight) {
 	Monom m(1, 2, 3, 4);
 	Polynom p(m);
 
-	EXPECT_EQ((p * 10.0).getValue(), "10.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p * 10.0).getValue(), "10.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, ConstantDivisionWorksRight) {
 	Monom m(5, 2, 3, 4);
 	Polynom p(m);
 
-	EXPECT_EQ((p / 2.0).getValue(), "2.50*X^2*Y^3*Z^4");
+	EXPECT_EQ((p / 2.0).getValue(), "2.50 * x^2y^3z^4");
 }
 
 TEST(Polynom, CanAddMonom) {
@@ -216,7 +216,7 @@ TEST(Polynom, MonomAdditionWorksRight1) {
 	Polynom p(m1);
 	Monom m2(1, 2, 3, 4);
 
-	EXPECT_EQ((p + m2).getValue(), "2.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p + m2).getValue(), "2.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, MonomAdditionWorksRight2) {
@@ -224,7 +224,7 @@ TEST(Polynom, MonomAdditionWorksRight2) {
 	Polynom p(m1);
 	Monom m2(2, 3, 4, 5);
 
-	EXPECT_EQ((p + m2).getValue(), "1.0*X^2*Y^3*Z^4 + 2.0*X^3*Y^4*Z^5");
+	EXPECT_EQ((p + m2).getValue(), "1.0 * x^2y^3z^4 + 2.0 * x^3y^4z^5");
 }
 
 TEST(Polynom, MonomSubtractionWorksRight1) {
@@ -232,7 +232,7 @@ TEST(Polynom, MonomSubtractionWorksRight1) {
 	Polynom p(m1);
 	Monom m2(1, 2, 3, 4);
 
-	EXPECT_EQ((p - m2).getValue(), "1.0*X^2*Y^3*Z^4");
+	EXPECT_EQ((p - m2).getValue(), "1.0 * x^2y^3z^4");
 }
 
 TEST(Polynom, MonomSubtractionWorksRight2) {
@@ -240,7 +240,7 @@ TEST(Polynom, MonomSubtractionWorksRight2) {
 	Polynom p(m1);
 	Monom m2(2, 3, 4, 5);
 
-	EXPECT_EQ((p - m2).getValue(), "1.0*X^2*Y^3*Z^4 + (-2.0)*X^3*Y^4*Z^5");
+	EXPECT_EQ((p - m2).getValue(), "1.0 * x^2y^3z^4 + (-2.0) * x^3y^4z^5");
 }
 
 TEST(Polynom, MonomMultiplicationWorksRight) {
@@ -250,5 +250,5 @@ TEST(Polynom, MonomMultiplicationWorksRight) {
 	p = p + m2;
 
 	Monom m3(2, 2, 2, 2);
-	EXPECT_EQ((p * m3).getValue(), "2.0*X^4*Y^5*Z^6 + 4.0*X^5*Y^6*Z^7");
+	EXPECT_EQ((p * m3).getValue(), "2.0 * x^4y^5z^6 + 4.0 * x^5y^6z^7");
 }
